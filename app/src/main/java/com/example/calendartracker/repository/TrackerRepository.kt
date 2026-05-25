@@ -8,8 +8,20 @@ class TrackerRepository(private val dao: TrackerDao) {
     val trackers = dao.getTrackers()
     val entries = dao.getEntries()
 
-    suspend fun addTracker(name: String, type: String) {
-        dao.insertTracker(TrackerDefinition(name = name, type = type))
+    suspend fun addTracker(
+        name: String,
+        type: String,
+        min: Int?,
+        max: Int?
+    ) {
+        dao.insertTracker(
+            TrackerDefinition(
+                name = name,
+                type = type,
+                minValue = min,
+                maxValue = max
+            )
+        )
     }
 
     suspend fun addEntry(date: Long, values: List<TrackerValue>) {

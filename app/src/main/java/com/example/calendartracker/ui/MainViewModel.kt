@@ -22,10 +22,14 @@ class MainViewModel(private val repo: TrackerRepository) : ViewModel() {
         emptyList()
     )
 
-    fun addTracker(name: String, type: String) {
+    fun addTracker(name: String, type: String, min: Int?, max: Int?) {
         viewModelScope.launch {
-            repo.addTracker(name, type)
+            repo.addTracker(name, type, min, max)
         }
+    }
+
+    fun addTracker(name: String, type: String) {
+        addTracker(name, type, null, null)
     }
 
     fun saveEntry(values: List<TrackerValue>) {

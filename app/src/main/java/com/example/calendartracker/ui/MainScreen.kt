@@ -4,9 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.calendartracker.ui.MainViewModel
 import com.example.calendartracker.data.*
@@ -227,8 +229,12 @@ fun MainScreen(viewModel: MainViewModel) {
                             when (tracker.type) {
 
                                 "number" -> {
-                                    val current =
-                                        values[tracker.id]?.value?.toFloatOrNull() ?: 0f
+                                    val min = tracker.minValue ?: 0
+                                    val max = tracker.maxValue ?: 10
+
+                                    val current = values[tracker.id]?.value?.toFloatOrNull()
+                                        ?: min.toFloat()
+
 
                                     Text(
                                         text = "Value: ${current.toInt()}",
@@ -245,7 +251,7 @@ fun MainScreen(viewModel: MainViewModel) {
                                                 state = ValueState.ENTERED
                                             )
                                         },
-                                        valueRange = 0f..10f
+                                        valueRange = min.toFloat()..max.toFloat()
                                     )
                                 }
 
@@ -307,6 +313,9 @@ fun MainScreen(viewModel: MainViewModel) {
             var name by remember { mutableStateOf("") }
             var type by remember { mutableStateOf("text") }
 
+            var minValue by remember { mutableStateOf("0") }
+            var maxValue by remember { mutableStateOf("10") }
+
             Column(Modifier.fillMaxSize().padding(16.dp)) {
 
                 Text("Add Tracker", style = MaterialTheme.typography.headlineMedium)
@@ -338,10 +347,31 @@ fun MainScreen(viewModel: MainViewModel) {
                     }
                 }
 
+                if (type == "number") {
+
+                    TextField(
+                        value = minValue,
+                        onValueChange = { minValue = it },
+                        label = { Text("Min Value") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+
+                    TextField(
+                        value = maxValue,
+                        onValueChange = { maxValue = it },
+                        label = { Text("Max Value") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+                }
+
                 Spacer(Modifier.height(16.dp))
 
                 Button(onClick = {
-                    viewModel.addTracker(name, type)
+                    viewModel.addTracker(name, type, minValue.toInt(), maxValue.toInt())
                     screen = Screen.CALENDAR
                 }) {
                     Text("Create Tracker")

@@ -230,6 +230,11 @@ fun MainScreen(viewModel: MainViewModel) {
                                     val current =
                                         values[tracker.id]?.value?.toFloatOrNull() ?: 0f
 
+                                    Text(
+                                        text = "Value: ${current.toInt()}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+
                                     Slider(
                                         value = current,
                                         onValueChange = {

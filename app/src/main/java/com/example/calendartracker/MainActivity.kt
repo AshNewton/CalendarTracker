@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calendartracker.data.AppDatabase
 import com.example.calendartracker.repository.TrackerRepository
-import com.example.calendartracker.ui.*
-import com.example.dailytracker.ui.MainScreen
+import com.example.calendartracker.ui.MainViewModel
+import com.example.calendartracker.ui.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

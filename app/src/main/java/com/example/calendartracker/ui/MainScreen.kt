@@ -1,16 +1,9 @@
-package com.example.dailytracker.ui
+package com.example.calendartracker.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import com.example.calendartracker.data.*
-import com.example.calendartracker.ui.AddTrackerScreen
-import com.example.calendartracker.ui.CalendarScreen
-import com.example.calendartracker.ui.DayDetailScreen
-import com.example.calendartracker.ui.EditDayScreen
-import com.example.calendartracker.ui.MainViewModel
-import com.example.calendartracker.ui.Screen
-import java.util.*
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
@@ -21,7 +14,12 @@ fun MainScreen(viewModel: MainViewModel) {
     var screen by remember { mutableStateOf(Screen.CALENDAR) }
     var selectedEntry by remember { mutableStateOf<TrackerEntry?>(null) }
 
-    when (screen) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+    ){
+        when (screen) {
 
         Screen.CALENDAR -> CalendarScreen(
             entries = entries,
@@ -56,5 +54,7 @@ fun MainScreen(viewModel: MainViewModel) {
             onCancel = { screen = Screen.CALENDAR },
             onDone = { screen = Screen.CALENDAR }
         )
-    }
+    }}
+
+
 }

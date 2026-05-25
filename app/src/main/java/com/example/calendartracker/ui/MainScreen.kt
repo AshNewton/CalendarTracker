@@ -241,7 +241,7 @@ fun MainScreen(viewModel: MainViewModel) {
                                             values[tracker.id] = TrackerValue(
                                                 entryId = 0,
                                                 trackerId = tracker.id,
-                                                value = it.toString(),
+                                                value = it.toInt().toString(),
                                                 state = ValueState.ENTERED
                                             )
                                         },

@@ -18,24 +18,45 @@ fun CalendarScreen(
     onAddTracker: () -> Unit,
     onSelectEntry: (TrackerEntry) -> Unit
 ) {
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
 
-        Text("Calendar", style = MaterialTheme.typography.headlineMedium)
+    Scaffold(
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    "Calendar",
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
-        Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
-        Button(onClick = onAddEdit) {
-            Text("Add / Edit Today")
+                Row {
+                    Button(onClick = onAddEdit) {
+                        Text("Add / Edit Today")
+                    }
+
+                    Spacer(Modifier.width(8.dp))
+
+                    Button(onClick = onAddTracker) {
+                        Text("Add Tracker")
+                    }
+                }
+            }
         }
+    ) { padding ->
 
-        Button(onClick = onAddTracker) {
-            Text("Add New Tracker")
-        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
 
-        Spacer(Modifier.height(16.dp))
-
-        LazyColumn {
             items(entries) { entry ->
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

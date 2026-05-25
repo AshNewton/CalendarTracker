@@ -13,6 +13,7 @@ import java.util.*
 
 @Composable
 fun AddTrackerScreen(
+    trackers: List<TrackerDefinition>,
     viewModel: MainViewModel,
     onCancel: () -> Unit,
     onDone: () -> Unit
@@ -22,6 +23,10 @@ fun AddTrackerScreen(
 
     var minValue by remember { mutableStateOf("0") }
     var maxValue by remember { mutableStateOf("10") }
+
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val nameInUse = trackers.any { it.name.equals(name, ignoreCase = true) }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
 
@@ -83,10 +88,34 @@ fun AddTrackerScreen(
             Text("Cancel")
         }
         Button(onClick = {
-            viewModel.addTracker(name, type, minValue.toInt(), maxValue.toInt())
-            onDone()
-        }) {
+                viewModel.addTracker(name, type, minValue.toInt(), maxValue.toInt()) { result ->
+                    result.onSuccess {
+                        onDone()
+                    }
+                    result.onFailure {
+                        error = it.message
+                    }
+                }
+            },
+            enabled = name.isNotBlank() && !nameInUse)
+        {
             Text("Create Tracker")
+        }
+
+        error?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        if(nameInUse){
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Tracker name must be unique",
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }

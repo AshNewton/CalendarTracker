@@ -51,6 +51,7 @@ fun MainScreen(viewModel: MainViewModel) {
         )
 
         Screen.ADD_TRACKER -> AddTrackerScreen(
+            trackers = trackers,
             viewModel = viewModel,
             onCancel = { screen = Screen.CALENDAR },
             onDone = { screen = Screen.CALENDAR }

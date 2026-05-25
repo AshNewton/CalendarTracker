@@ -8,20 +8,27 @@ class TrackerRepository(private val dao: TrackerDao) {
     val trackers = dao.getTrackers()
     val entries = dao.getEntries()
 
-    suspend fun addTracker(
-        name: String,
-        type: String,
-        min: Int?,
-        max: Int?
-    ) {
+    suspend fun addTracker(name: String, type: String, min: Int?, max: Int?): Result<Unit> {
+
+        if (name.isBlank()) {
+            return Result.failure(Exception("Name is required"))
+        }
+
+        val exists = dao.countTrackersByName(name) > 0
+        if (exists) {
+            return Result.failure(Exception("Tracker name must be unique"))
+        }
+
         dao.insertTracker(
             TrackerDefinition(
-                name = name,
+                name = name.trim(),
                 type = type,
                 minValue = min,
                 maxValue = max
             )
         )
+
+        return Result.success(Unit)
     }
 
     suspend fun addEntry(date: Long, values: List<TrackerValue>) {

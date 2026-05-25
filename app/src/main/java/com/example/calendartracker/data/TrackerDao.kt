@@ -10,6 +10,9 @@ interface TrackerDao {
     @Query("SELECT * FROM trackers")
     fun getTrackers(): Flow<List<TrackerDefinition>>
 
+    @Query("SELECT COUNT(*) FROM trackers WHERE LOWER(name) = LOWER(:name)")
+    suspend fun countTrackersByName(name: String): Int
+
     @Insert suspend fun insertEntry(entry: TrackerEntry): Long
     @Query("SELECT * FROM entries ORDER BY date DESC")
     fun getEntries(): Flow<List<TrackerEntry>>
@@ -21,6 +24,4 @@ interface TrackerDao {
 
     @Query("SELECT * FROM entries WHERE date BETWEEN :start AND :end LIMIT 1")
     suspend fun getEntryForDay(start: Long, end: Long): TrackerEntry?
-
-
 }

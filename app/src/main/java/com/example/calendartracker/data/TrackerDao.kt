@@ -6,24 +6,47 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrackerDao {
 
+    // =====================================================
+    // Trackers
+    // =====================================================
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTracker(tracker: TrackerDefinition)
+
     @Query("SELECT * FROM trackers")
     fun getTrackers(): Flow<List<TrackerDefinition>>
+
     @Query("SELECT COUNT(*) FROM trackers WHERE LOWER(name) = LOWER(:name)")
     suspend fun countTrackersByName(name: String): Int
 
-    @Insert suspend fun insertEntry(entry: TrackerEntry): Long
+
+    // =====================================================
+    // Entries
+    // =====================================================
+
+    @Insert
+    suspend fun insertEntry(entry: TrackerEntry): Long
+
     @Query("SELECT * FROM entries ORDER BY date DESC")
     fun getEntries(): Flow<List<TrackerEntry>>
+
     @Query("SELECT * FROM entries WHERE date BETWEEN :start AND :end LIMIT 1")
     suspend fun getEntryForDay(start: Long, end: Long): TrackerEntry?
+
     @Query("SELECT * FROM entries WHERE dayKey = :dayKey LIMIT 1")
     suspend fun getEntryByDay(dayKey: Long): TrackerEntry?
 
-    @Insert suspend fun insertValue(value: TrackerValue)
+
+    // =====================================================
+    // Values
+    // =====================================================
+
+    @Insert
+    suspend fun insertValue(value: TrackerValue)
+
     @Query("SELECT * FROM tracker_values WHERE entryId = :entryId")
     suspend fun getValuesForEntry(entryId: Int): List<TrackerValue>
+
     @Query("DELETE FROM tracker_values WHERE entryId = :entryId")
     suspend fun deleteValuesForEntry(entryId: Int)
 

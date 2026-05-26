@@ -7,7 +7,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.calendartracker.R
 import com.example.calendartracker.data.*
 import java.util.*
 
@@ -28,7 +30,7 @@ fun CalendarScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    "Calendar",
+                    stringResource(R.string.calendar),
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -38,13 +40,13 @@ fun CalendarScreen(
                     Button(
                         onClick = onAddEdit,
                         enabled = trackers.isNotEmpty()) {
-                        Text("Add / Edit Today")
+                        Text(stringResource(R.string.add_edit_today))
                     }
 
                     Spacer(Modifier.width(8.dp))
 
                     Button(onClick = onAddTracker) {
-                        Text("Add Tracker")
+                        Text(stringResource(R.string.add_tracker))
                     }
                 }
             }
@@ -68,7 +70,7 @@ fun CalendarScreen(
                 ) {
                     Column(Modifier.padding(12.dp)) {
                         Text(Date(entry.date).toString())
-                        Text("Tap to view details")
+                        Text(stringResource(R.string.view_details))
                     }
                 }
             }

@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">CalendarTracker</string>
+
+
+    <string name="back">Back</string>
+    <string name="calendar">Calendar</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="edit">Edit</string>
+    <string name="max_value">Max Value</string>
+    <string name="min_value">Min Value</string>
+    <string name="na">N/A</string>
+    <string name="no_data">No Data</string>
+    <string name="text">Text</string>
+    <string name="type">Type</string>
+    <string name="number">Number</string>
+    <string name="yes_no">Yes/No</string>
+
+
+    <string name="add_edit_today">Add/Edit Today</string>
+    <string name="add_tracker">Add Tracker</string>
+    <string name="day_details">Day Details</string>
+    <string name="edit_day">Edit Day</string>
+    <string name="save_day">Save Day</string>
+    <string name="tracker_name">Tracker Name</string>
+
+
+    <string name="view_details">Tap to view details</string>
+
+
+    <string name="format_date">Date: %s</string>
+    <string name="format_value">Value: %s</string>
+
+
+    <string name="error_duplicate_tracker_name">Tracker name must be unique</string>
+    <string name="error_empty_tracker_name">Name is Required</string>
+    <string name="error_no_entry_selected">No Entry Selected</string>
 </resources>

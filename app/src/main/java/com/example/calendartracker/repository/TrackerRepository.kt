@@ -3,12 +3,25 @@ package com.example.calendartracker.repository
 import com.example.calendartracker.data.*
 import com.example.calendartracker.util.dayKey
 
-class TrackerRepository(private val dao: TrackerDao) {
+
+class TrackerRepository(
+    private val dao: TrackerDao
+) {
 
     val trackers = dao.getTrackers()
     val entries = dao.getEntries()
 
-    suspend fun addTracker(name: String, type: TrackerType, min: Int?, max: Int?): Result<Unit> {
+
+    // =====================================================
+    // Trackers
+    // =====================================================
+
+    suspend fun addTracker(
+        name: String,
+        type: TrackerType,
+        min: Int?,
+        max: Int?
+    ): Result<Unit> {
 
         if (name.isBlank()) {
             return Result.failure(Exception("Name is required"))
@@ -31,9 +44,9 @@ class TrackerRepository(private val dao: TrackerDao) {
         return Result.success(Unit)
     }
 
-    suspend fun getValuesForEntry(entryId: Int): List<TrackerValue> {
-        return dao.getValuesForEntry(entryId)
-    }
+    // =====================================================
+    // Entries
+    // =====================================================
 
     suspend fun saveEntryForDate(
         time: Long,
@@ -42,10 +55,7 @@ class TrackerRepository(private val dao: TrackerDao) {
 
         val key = dayKey(time)
 
-        // check if day already exists
-        val existingEntry = dao.getEntryByDay(key)
-
-        val entryId = existingEntry?.id
+        val entryId = dao.getEntryByDay(key)?.id
             ?: dao.insertEntry(
                 TrackerEntry(
                     date = time,
@@ -53,20 +63,22 @@ class TrackerRepository(private val dao: TrackerDao) {
                 )
             ).toInt()
 
-        // remove old values for this day
         dao.deleteValuesForEntry(entryId)
 
-        // insert updated values
-        values.forEach {
-            dao.insertValue(
-                it.copy(entryId = entryId)
-            )
+        values.forEach { value ->
+            dao.insertValue(value.copy(entryId = entryId))
         }
     }
 
+    // =====================================================
+    // Values
+    // =====================================================
+
+    suspend fun getValuesForEntry(entryId: Int): List<TrackerValue> {
+        return dao.getValuesForEntry(entryId)
+    }
+
     suspend fun getValuesForDay(time: Long): List<TrackerValue> {
-        return dao.getValuesForDay(
-            dayKey(time)
-        )
+        return dao.getValuesForDay(dayKey(time))
     }
 }

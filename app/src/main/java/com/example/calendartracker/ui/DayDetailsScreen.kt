@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.calendartracker.R
 import com.example.calendartracker.data.*
 import java.util.*
 
@@ -38,8 +40,8 @@ fun DayDetailScreen(
                     .navigationBarsPadding(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(onClick = onBack) { Text("Back") }
-                Button(onClick = onEdit) { Text("Edit") }
+                Button(onClick = onBack) { Text(stringResource(R.string.back)) }
+                Button(onClick = onEdit) { Text(stringResource(R.string.edit)) }
             }
         }
     ) { padding ->
@@ -52,15 +54,15 @@ fun DayDetailScreen(
         ) {
 
             if (entry == null) {
-                Text("No entry selected")
+                Text(stringResource(R.string.error_no_entry_selected))
                 return@Column
             }
 
-            Text("Day Details", style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.day_details), style = MaterialTheme.typography.headlineMedium)
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Date: ${Date(entry.date)}")
+            Text(stringResource(R.string.format_date, Date(entry.date)))
 
             Spacer(Modifier.height(16.dp))
 
@@ -68,9 +70,9 @@ fun DayDetailScreen(
 
                 val value = valuesState[tracker.id]
 
-                Text("• ${tracker.name}")
+                Text(tracker.name)
 
-                Text(value?.value ?: "No data")
+                Text(value?.value ?: stringResource(R.string.no_data))
 
                 Spacer(Modifier.height(12.dp))
             }

@@ -5,9 +5,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.calendartracker.data.*
+import com.example.calendartracker.R
 
 @Composable
 fun AddTrackerScreen(
@@ -41,7 +43,7 @@ fun AddTrackerScreen(
             ) {
 
                 Button(onClick = onCancel) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
 
                 Button(
@@ -62,7 +64,7 @@ fun AddTrackerScreen(
                     },
                     enabled = name.isNotBlank() && !nameInUse
                 ) {
-                    Text("Create")
+                    Text(stringResource(R.string.create))
                 }
             }
         }
@@ -76,7 +78,7 @@ fun AddTrackerScreen(
         ) {
 
             Text(
-                "Add Tracker",
+                stringResource(R.string.add_tracker),
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -85,13 +87,13 @@ fun AddTrackerScreen(
             TextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Tracker Name") },
+                label = { Text(stringResource(R.string.tracker_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Type")
+            Text(stringResource(R.string.type))
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -99,31 +101,31 @@ fun AddTrackerScreen(
 
                 if (type == TrackerType.TEXT) {
                     Button(onClick = { type = TrackerType.TEXT }) {
-                        Text("Text")
+                        Text(stringResource(R.string.text))
                     }
                 } else {
                     OutlinedButton(onClick = { type = TrackerType.TEXT }) {
-                        Text("Text")
+                        Text(stringResource(R.string.text))
                     }
                 }
 
                 if (type == TrackerType.NUMBER) {
                     Button(onClick = { type = TrackerType.NUMBER }) {
-                        Text("Number")
+                        Text(stringResource(R.string.number))
                     }
                 } else {
                     OutlinedButton(onClick = { type = TrackerType.NUMBER }) {
-                        Text("Number")
+                        Text(stringResource(R.string.number))
                     }
                 }
 
                 if (type == TrackerType.BOOL) {
                     Button(onClick = { type = TrackerType.BOOL }) {
-                        Text("Yes/No")
+                        Text(stringResource(R.string.yes_no))
                     }
                 } else {
                     OutlinedButton(onClick = { type = TrackerType.BOOL }) {
-                        Text("Yes/No")
+                        Text(stringResource(R.string.yes_no))
                     }
                 }
             }
@@ -135,7 +137,7 @@ fun AddTrackerScreen(
                 TextField(
                     value = minValue,
                     onValueChange = { minValue = it },
-                    label = { Text("Min Value") },
+                    label = { Text(stringResource(R.string.min_value)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
@@ -147,7 +149,7 @@ fun AddTrackerScreen(
                 TextField(
                     value = maxValue,
                     onValueChange = { maxValue = it },
-                    label = { Text("Max Value") },
+                    label = { Text(stringResource(R.string.max_value)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
@@ -167,7 +169,7 @@ fun AddTrackerScreen(
 
             if (nameInUse) {
                 Text(
-                    text = "Tracker name must be unique",
+                    text = stringResource(R.string.error_duplicate_tracker_name),
                     color = MaterialTheme.colorScheme.error
                 )
             }

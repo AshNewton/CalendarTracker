@@ -6,7 +6,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.calendartracker.R
 import com.example.calendartracker.data.*
 
 @Composable
@@ -42,7 +44,7 @@ fun EditDayScreen(
             ) {
 
                 Button(onClick = onCancel) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
 
                 Button(onClick = {
@@ -52,7 +54,7 @@ fun EditDayScreen(
                     )
                     onSave()
                 }) {
-                    Text("Save Day")
+                    Text(stringResource(R.string.save_day))
                 }
             }
         }
@@ -65,7 +67,7 @@ fun EditDayScreen(
                 .padding(16.dp)
         ) {
             Text(
-                "Edit Day",
+                stringResource(R.string.edit_day),
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -86,7 +88,7 @@ fun EditDayScreen(
 
 
                             Text(
-                                text = "Value: ${current.toInt()}",
+                                text = stringResource(R.string.format_value, current.toInt()),
                                 style = MaterialTheme.typography.bodyLarge
                             )
 
@@ -148,7 +150,7 @@ fun EditDayScreen(
                                 state = ValueState.ENTERED
                             )
                         }) {
-                            Text("N/A")
+                            Text(stringResource(R.string.na))
                         }
                     } else {
                         OutlinedButton(onClick = {
@@ -159,7 +161,7 @@ fun EditDayScreen(
                                 state = ValueState.UNKNOWN
                             )
                         }) {
-                            Text("N/A")
+                            Text(stringResource(R.string.na))
                         }
                     }
 

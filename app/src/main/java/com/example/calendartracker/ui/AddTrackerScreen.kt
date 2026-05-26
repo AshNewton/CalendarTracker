@@ -93,22 +93,38 @@ fun AddTrackerScreen(
 
             Text("Type")
 
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-                Button(onClick = { type = TrackerType.TEXT }) {
-                    Text("Text")
+                if (type == TrackerType.TEXT) {
+                    Button(onClick = { type = TrackerType.TEXT }) {
+                        Text("Text")
+                    }
+                } else {
+                    OutlinedButton(onClick = { type = TrackerType.TEXT }) {
+                        Text("Text")
+                    }
                 }
 
-                Spacer(Modifier.width(8.dp))
-
-                Button(onClick = { type = TrackerType.NUMBER }) {
-                    Text("Number")
+                if (type == TrackerType.NUMBER) {
+                    Button(onClick = { type = TrackerType.NUMBER }) {
+                        Text("Number")
+                    }
+                } else {
+                    OutlinedButton(onClick = { type = TrackerType.NUMBER }) {
+                        Text("Number")
+                    }
                 }
 
-                Spacer(Modifier.width(8.dp))
-
-                Button(onClick = { type = TrackerType.BOOL }) {
-                    Text("Yes/No")
+                if (type == TrackerType.BOOL) {
+                    Button(onClick = { type = TrackerType.BOOL }) {
+                        Text("Yes/No")
+                    }
+                } else {
+                    OutlinedButton(onClick = { type = TrackerType.BOOL }) {
+                        Text("Yes/No")
+                    }
                 }
             }
 

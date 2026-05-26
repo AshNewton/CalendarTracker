@@ -136,15 +136,31 @@ fun EditDayScreen(
                         }
                     }
 
-                    Button(onClick = {
-                        values[tracker.id] = TrackerValue(
-                            entryId = 0,
-                            trackerId = tracker.id,
-                            value = null,
-                            state = ValueState.UNKNOWN
-                        )
-                    }) {
-                        Text("Mark as N/A")
+                    val currentValue = values[tracker.id]
+                    val isNA = currentValue?.state == ValueState.UNKNOWN
+
+                    if (isNA) {
+                        Button(onClick = {
+                            values[tracker.id] = TrackerValue(
+                                entryId = 0,
+                                trackerId = tracker.id,
+                                value = "",
+                                state = ValueState.ENTERED
+                            )
+                        }) {
+                            Text("N/A")
+                        }
+                    } else {
+                        OutlinedButton(onClick = {
+                            values[tracker.id] = TrackerValue(
+                                entryId = 0,
+                                trackerId = tracker.id,
+                                value = null,
+                                state = ValueState.UNKNOWN
+                            )
+                        }) {
+                            Text("N/A")
+                        }
                     }
 
                     Spacer(Modifier.height(10.dp))

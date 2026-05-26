@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class TrackerDefinition(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val type: String, // number", "bool", "text"
+    val type: TrackerType,
 
     val minValue: Int? = null,
     val maxValue: Int? = null

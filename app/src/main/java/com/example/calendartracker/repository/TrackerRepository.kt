@@ -8,7 +8,7 @@ class TrackerRepository(private val dao: TrackerDao) {
     val trackers = dao.getTrackers()
     val entries = dao.getEntries()
 
-    suspend fun addTracker(name: String, type: String, min: Int?, max: Int?): Result<Unit> {
+    suspend fun addTracker(name: String, type: TrackerType, min: Int?, max: Int?): Result<Unit> {
 
         if (name.isBlank()) {
             return Result.failure(Exception("Name is required"))

@@ -77,7 +77,7 @@ fun EditDayScreen(
 
                     when (tracker.type) {
 
-                        "number" -> {
+                        TrackerType.NUMBER -> {
                             val min = tracker.minValue ?: 0
                             val max = tracker.maxValue ?: 10
 
@@ -104,7 +104,7 @@ fun EditDayScreen(
                             )
                         }
 
-                        "bool" -> {
+                        TrackerType.BOOL -> {
                             val current =
                                 values[tracker.id]?.value?.toBoolean() ?: false
 
@@ -121,7 +121,7 @@ fun EditDayScreen(
                             )
                         }
 
-                        "text" -> {
+                        TrackerType.TEXT -> {
                             TextField(
                                 value = values[tracker.id]?.value ?: "",
                                 onValueChange = {

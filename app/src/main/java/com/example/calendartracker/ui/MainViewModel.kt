@@ -2,6 +2,7 @@ package com.example.calendartracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendartracker.data.TrackerType
 import com.example.calendartracker.data.TrackerValue
 import com.example.calendartracker.repository.TrackerRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +25,7 @@ class MainViewModel(private val repo: TrackerRepository) : ViewModel() {
 
     fun addTracker(
         name: String,
-        type: String,
+        type: TrackerType,
         min: Int?,
         max: Int?,
         onResult: (Result<Unit>) -> Unit

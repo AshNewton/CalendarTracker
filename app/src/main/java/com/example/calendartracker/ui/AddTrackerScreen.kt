@@ -18,7 +18,7 @@ fun AddTrackerScreen(
 ) {
 
     var name by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("text") }
+    var type by remember { mutableStateOf(TrackerType.TEXT) }
 
     var minValue by remember { mutableStateOf("0") }
     var maxValue by remember { mutableStateOf("10") }
@@ -95,26 +95,26 @@ fun AddTrackerScreen(
 
             Row {
 
-                Button(onClick = { type = "text" }) {
+                Button(onClick = { type = TrackerType.TEXT }) {
                     Text("Text")
                 }
 
                 Spacer(Modifier.width(8.dp))
 
-                Button(onClick = { type = "number" }) {
+                Button(onClick = { type = TrackerType.NUMBER }) {
                     Text("Number")
                 }
 
                 Spacer(Modifier.width(8.dp))
 
-                Button(onClick = { type = "bool" }) {
+                Button(onClick = { type = TrackerType.BOOL }) {
                     Text("Yes/No")
                 }
             }
 
             Spacer(Modifier.height(12.dp))
 
-            if (type == "number") {
+            if (type == TrackerType.NUMBER) {
 
                 TextField(
                     value = minValue,

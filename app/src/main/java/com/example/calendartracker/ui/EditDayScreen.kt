@@ -16,7 +16,20 @@ fun EditDayScreen(
     onCancel: () -> Unit,
     onSave: () -> Unit
 ) {
-    val values = remember { mutableStateMapOf<Int, TrackerValue>() }
+    val values = remember {
+        mutableStateMapOf<Int, TrackerValue>()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadValuesForDay(
+            System.currentTimeMillis()
+        ) { loaded ->
+            values.clear()
+            loaded.forEach {
+                values[it.trackerId] = it
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {

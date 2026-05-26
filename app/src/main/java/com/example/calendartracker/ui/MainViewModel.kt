@@ -35,27 +35,14 @@ class MainViewModel(private val repo: TrackerRepository) : ViewModel() {
         }
     }
 
-    fun saveEntry(values: List<TrackerValue>) {
+    fun saveEntryForDate(
+        time: Long,
+        values: List<TrackerValue>
+    ) {
         viewModelScope.launch {
-            repo.addEntry(
-                date = System.currentTimeMillis(),
-                values = values
-            )
-        }
-    }
-
-    fun saveEntryForDate(date: Long, values: List<TrackerValue>) {
-        viewModelScope.launch {
-
-            val entry = repo.getOrCreateEntryForDay(date)
-
-            val fixed = values.map {
-                it.copy(entryId = entry.id)
-            }
-
-            repo.addEntry(
-                date = System.currentTimeMillis(),
-                values = fixed
+            repo.saveEntryForDate(
+                time,
+                values
             )
         }
     }
@@ -64,6 +51,16 @@ class MainViewModel(private val repo: TrackerRepository) : ViewModel() {
         viewModelScope.launch {
             val values = repo.getValuesForEntry(entryId)
             onResult(values)
+        }
+    }
+
+    fun loadValuesForDay(
+        time: Long,
+        onLoaded: (List<TrackerValue>) -> Unit
+    ) {
+        viewModelScope.launch {
+            val values = repo.getValuesForDay(time)
+            onLoaded(values)
         }
     }
 }

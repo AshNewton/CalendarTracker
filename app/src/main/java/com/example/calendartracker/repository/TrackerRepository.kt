@@ -1,7 +1,7 @@
 package com.example.calendartracker.repository
 
 import com.example.calendartracker.data.*
-import com.example.calendartracker.util.dayRange
+import com.example.calendartracker.util.dayKey
 
 class TrackerRepository(private val dao: TrackerDao) {
 
@@ -31,30 +31,42 @@ class TrackerRepository(private val dao: TrackerDao) {
         return Result.success(Unit)
     }
 
-    suspend fun addEntry(date: Long, values: List<TrackerValue>) {
+    suspend fun getValuesForEntry(entryId: Int): List<TrackerValue> {
+        return dao.getValuesForEntry(entryId)
+    }
 
-        val entryId = dao.insertEntry(
-            TrackerEntry(date = date)
-        )
+    suspend fun saveEntryForDate(
+        time: Long,
+        values: List<TrackerValue>
+    ) {
 
+        val key = dayKey(time)
+
+        // check if day already exists
+        val existingEntry = dao.getEntryByDay(key)
+
+        val entryId = existingEntry?.id
+            ?: dao.insertEntry(
+                TrackerEntry(
+                    date = time,
+                    dayKey = key
+                )
+            ).toInt()
+
+        // remove old values for this day
+        dao.deleteValuesForEntry(entryId)
+
+        // insert updated values
         values.forEach {
             dao.insertValue(
-                it.copy(entryId = entryId.toInt())
+                it.copy(entryId = entryId)
             )
         }
     }
 
-    suspend fun getOrCreateEntryForDay(time: Long): TrackerEntry {
-        val (start, end) = dayRange(time)
-
-        val existing = dao.getEntryForDay(start, end)
-        if (existing != null) return existing
-
-        val id = dao.insertEntry(TrackerEntry(date = start))
-        return TrackerEntry(id = id.toInt(), date = start)
-    }
-
-    suspend fun getValuesForEntry(entryId: Int): List<TrackerValue> {
-        return dao.getValuesForEntry(entryId)
+    suspend fun getValuesForDay(time: Long): List<TrackerValue> {
+        return dao.getValuesForDay(
+            dayKey(time)
+        )
     }
 }

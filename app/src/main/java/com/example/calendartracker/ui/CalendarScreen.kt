@@ -14,6 +14,7 @@ import java.util.*
 @Composable
 fun CalendarScreen(
     entries: List<TrackerEntry>,
+    trackers: List<TrackerDefinition>,
     onAddEdit: () -> Unit,
     onAddTracker: () -> Unit,
     onSelectEntry: (TrackerEntry) -> Unit
@@ -34,7 +35,9 @@ fun CalendarScreen(
                 Spacer(Modifier.height(12.dp))
 
                 Row {
-                    Button(onClick = onAddEdit) {
+                    Button(
+                        onClick = onAddEdit,
+                        enabled = trackers.isNotEmpty()) {
                         Text("Add / Edit Today")
                     }
 

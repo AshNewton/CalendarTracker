@@ -23,6 +23,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
         Screen.CALENDAR -> CalendarScreen(
             entries = entries,
+            trackers = trackers,
             onAddEdit = { screen = Screen.EDIT_DAY },
             onAddTracker = { screen = Screen.ADD_TRACKER },
             onSelectEntry = {

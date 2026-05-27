@@ -15,6 +15,7 @@ import com.example.calendartracker.data.*
 fun ManageTrackersScreen(
     trackers: List<TrackerDefinition>,
     viewModel: MainViewModel,
+    onAddTracker: () -> Unit,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -43,6 +44,15 @@ fun ManageTrackersScreen(
                 style = MaterialTheme.typography.headlineMedium
             )
             Spacer(Modifier.height(16.dp))
+
+            Row {
+                Button(onClick = onAddTracker) {
+                    Text(stringResource(R.string.add_tracker))
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
 
             LazyColumn {
                 items(trackers) { tracker ->

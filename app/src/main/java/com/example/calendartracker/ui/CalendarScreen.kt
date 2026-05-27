@@ -19,7 +19,6 @@ fun CalendarScreen(
     trackers: List<TrackerDefinition>,
     onAddEdit: () -> Unit,
     onManageTrackers: () -> Unit,
-    onAddTracker: () -> Unit,
     onSelectEntry: (TrackerEntry) -> Unit
 ) {
 
@@ -40,7 +39,8 @@ fun CalendarScreen(
                 Row {
                     Button(
                         onClick = onAddEdit,
-                        enabled = trackers.isNotEmpty()) {
+                        enabled = trackers.isNotEmpty()
+                    ) {
                         Text(stringResource(R.string.add_edit_today))
                     }
 
@@ -48,11 +48,6 @@ fun CalendarScreen(
 
                     Button(onClick = onManageTrackers) {
                         Text(stringResource(R.string.manage_trackers))
-                    }
-                }
-                Row {
-                    Button(onClick = onAddTracker) {
-                        Text(stringResource(R.string.add_tracker))
                     }
                 }
             }

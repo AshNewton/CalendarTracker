@@ -24,6 +24,7 @@
     <string name="edit_day">Edit Day</string>
     <string name="manage_trackers">Manage Trackers</string>
     <string name="save_day">Save Day</string>
+    <string name="toggle_view">Toggle View</string>
     <string name="tracker_name">Tracker Name</string>
 
 

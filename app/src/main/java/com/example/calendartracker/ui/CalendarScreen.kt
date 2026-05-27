@@ -19,17 +19,24 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -52,6 +59,10 @@ fun CalendarScreen(
     onSelectEntry: (TrackerEntry?) -> Unit
 ) {
     val isCalendarView by viewModel.isCalendarView.collectAsState()
+    val monthValues by viewModel.monthValues.collectAsState()
+
+    var selectedTrackerId by remember { mutableStateOf<Int?>(null) }
+    var dropdownExpanded by remember { mutableStateOf(false) }
 
     val startMonth = remember { YearMonth.of(2020, 1) }
     val currentMonth = remember { YearMonth.now() }
@@ -67,6 +78,11 @@ fun CalendarScreen(
 
     fun pageToMonth(page: Int): YearMonth {
         return startMonth.plusMonths(page.toLong())
+    }
+
+    LaunchedEffect(pagerState.currentPage, entries.size) {
+        val visibleMonth = pageToMonth(pagerState.currentPage)
+        viewModel.loadMonthValues(visibleMonth)
     }
 
     Scaffold(
@@ -141,42 +157,93 @@ fun CalendarScreen(
                         }
                     }
                 } else { // calendar view
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        pageSpacing = 8.dp,
-                        beyondViewportPageCount = 1
-                    ) { page ->
-                        val month = pageToMonth(page)
-
-                        val monthName = remember(month) {
-                            month.month.name.lowercase().replaceFirstChar { it.uppercase() }
-                        }
-
-                        Column(
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        ExposedDropdownMenuBox(
+                            expanded = dropdownExpanded,
+                            onExpandedChange = { dropdownExpanded = !dropdownExpanded },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            verticalArrangement = Arrangement.Top
+                                .padding(horizontal = 16.dp)
                         ) {
-                            Text(
-                                text = "$monthName ${month.year}",
-                                style = MaterialTheme.typography.headlineSmall,
-                                modifier = Modifier.padding(12.dp)
-                            )
-
-                            CalendarGrid(
-                                month = month,
-                                entries = entries,
-                                onDayClick = { daykey ->
-                                    val entry = entries.firstOrNull {
-                                        it.dayKey == daykey
-                                    }
-
-                                    onSelectEntry(entry)
+                            OutlinedTextField(
+                                value = trackers.firstOrNull { it.id == selectedTrackerId }?.name
+                                    ?: "Select tracker",
+                                onValueChange = {},
+                                readOnly = true,
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(dropdownExpanded)
                                 }
                             )
+
+                            ExposedDropdownMenu(
+                                expanded = dropdownExpanded,
+                                onDismissRequest = { dropdownExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.none)) },
+                                    onClick = {
+                                        selectedTrackerId = null
+                                        dropdownExpanded = false
+                                    }
+                                )
+                                trackers.forEach { tracker ->
+                                    DropdownMenuItem(
+                                        text = { Text(tracker.name) },
+                                        onClick = {
+                                            selectedTrackerId = tracker.id
+                                            dropdownExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(8.dp))
+
+
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            pageSpacing = 8.dp,
+                            beyondViewportPageCount = 1
+                        ) { page ->
+                            val month = pageToMonth(page)
+
+                            val valuesForMonth = monthValues[month] ?: emptyList()
+
+                            val monthName = remember(month) {
+                                month.month.name.lowercase().replaceFirstChar { it.uppercase() }
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Text(
+                                    text = "$monthName ${month.year}",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    modifier = Modifier.padding(12.dp)
+                                )
+
+                                CalendarGrid(
+                                    month = month,
+                                    entries = entries,
+                                    onDayClick = { daykey ->
+                                        val entry = entries.firstOrNull {
+                                            it.dayKey == daykey
+                                        }
+
+                                        onSelectEntry(entry)
+                                    },
+                                    selectedTrackerId = selectedTrackerId,
+                                    trackers = trackers,
+                                    values = valuesForMonth
+                                )
+                            }
                         }
                     }
                 }

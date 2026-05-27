@@ -61,4 +61,14 @@ interface TrackerDao {
 
         return getValuesForEntry(entry.id)
     }
+
+    @Query("""
+    SELECT tv.* FROM tracker_values tv
+    INNER JOIN entries e ON tv.entryId = e.id
+    WHERE e.dayKey BETWEEN :startDayKey AND :endDayKey
+    """)
+    suspend fun getValuesForMonth(
+        startDayKey: Long,
+        endDayKey: Long
+    ): List<TrackerValue>
 }

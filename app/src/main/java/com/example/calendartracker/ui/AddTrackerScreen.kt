@@ -8,6 +8,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,6 +30,10 @@ fun AddTrackerScreen(
 
     var minValue by remember { mutableStateOf("0") }
     var maxValue by remember { mutableStateOf("10") }
+
+    var higherIsBetter by remember {
+        mutableStateOf(true)
+    }
 
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -64,7 +69,8 @@ fun AddTrackerScreen(
                             name,
                             type,
                             minValue.toInt(),
-                            maxValue.toInt()
+                            maxValue.toInt(),
+                            higherIsBetter
                         ) { result ->
                             result.onSuccess { onDone() }
                             result.onFailure { error = it.message }
@@ -161,6 +167,25 @@ fun AddTrackerScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = stringResource(R.string.higher_values_better),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+
+                    Switch(
+                        checked = higherIsBetter,
+                        onCheckedChange = {
+                            higherIsBetter = it
+                        }
+                    )
+                }
             }
 
             if (error != null) {

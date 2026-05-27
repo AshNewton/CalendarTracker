@@ -9,8 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.calendartracker.data.TrackerDefinition
 import com.example.calendartracker.data.TrackerEntry
+import com.example.calendartracker.data.TrackerType
+import com.example.calendartracker.data.TrackerValue
 import com.example.calendartracker.util.buildMonthGrid
 import java.time.YearMonth
 import java.util.*
@@ -19,7 +23,10 @@ import java.util.*
 fun CalendarGrid(
     month: YearMonth,
     entries: List<TrackerEntry>,
-    onDayClick: (Long) -> Unit
+    onDayClick: (Long) -> Unit,
+    selectedTrackerId: Int?,
+    trackers: List<TrackerDefinition>,
+    values: List<TrackerValue>
 ) {
     val days = remember(month) {
         buildMonthGrid(month)
@@ -27,6 +34,28 @@ fun CalendarGrid(
 
     val entryKeys = remember(entries) {
         entries.map { it.dayKey }.toSet()
+    }
+
+    val entryById = remember(entries) {
+        entries.associateBy { it.id }
+    }
+
+    val valueMap: Map<Long, TrackerValue> = remember(values, selectedTrackerId, entries) {
+        if (selectedTrackerId == null) return@remember emptyMap()
+
+        values
+            .filter { it.trackerId == selectedTrackerId }
+            .mapNotNull { value ->
+                val entry = entryById[value.entryId] ?: return@mapNotNull null
+                entry.dayKey to value
+            }
+            .toMap()
+    }
+
+    val tracker = trackers.firstOrNull { it.id == selectedTrackerId }
+
+    fun normalize(value: Float, min: Float, max: Float): Float {
+        return ((value - min) / (max - min)).coerceIn(0f, 1f)
     }
 
     fun toDayKey(year: Int, month: Int, day: Int): Long {
@@ -39,6 +68,43 @@ fun CalendarGrid(
         cal.set(Calendar.SECOND, 0)
         cal.set(Calendar.MILLISECOND, 0)
         return cal.timeInMillis
+    }
+
+    @Composable
+    fun getHeatColor(value: TrackerValue?): Color {
+        if (value == null) {
+            return MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f)
+        }
+
+        if (tracker == null) {
+            return MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f)
+        }
+
+        return when (tracker.type) {
+            TrackerType.BOOL -> {
+                val bool = value.value.toBoolean()
+                if (bool) Color.Green else Color.Red
+            }
+
+            TrackerType.NUMBER -> {
+                val num = value.value?.toFloatOrNull()
+                    ?: return Color.Gray
+
+                val min = tracker.minValue?.toFloat() ?: 0f
+                val max = tracker.maxValue?.toFloat() ?: 1f
+
+                val normalized = normalize(num, min, max)
+                val t = if (tracker.higherIsBetter == false) 1f - normalized else normalized
+
+                Color(
+                    red = 1f - t,
+                    green = t,
+                    blue = 0f
+                )
+            }
+
+            else -> MaterialTheme.colorScheme.surfaceVariant
+        }
     }
 
     Column(
@@ -61,25 +127,24 @@ fun CalendarGrid(
         days.chunked(7).forEach { week ->
             Row(Modifier.fillMaxWidth()) {
                 week.forEach { day ->
-                    val hasEntry = day != null && entryKeys.contains(
-                        toDayKey(month.year, month.monthValue, day)
-                    )
 
-                    val isToday = run {
+                    val dayKey = day?.let {
+                        toDayKey(month.year, month.monthValue, it)
+                    }
+
+                    val hasEntry = dayKey != null && entryKeys.contains(dayKey)
+                    val value = valueMap[dayKey]
+
+                    val isToday = dayKey != null && run {
                         val cal = Calendar.getInstance()
                         cal.set(Calendar.HOUR_OF_DAY, 0)
                         cal.set(Calendar.MINUTE, 0)
                         cal.set(Calendar.SECOND, 0)
                         cal.set(Calendar.MILLISECOND, 0)
-
-                        val todayKey = cal.timeInMillis
-
-                        day != null && todayKey == toDayKey(
-                            month.year,
-                            month.monthValue,
-                            day
-                        )
+                        cal.timeInMillis == dayKey
                     }
+
+                    val heatColor = getHeatColor(value)
 
                     Card(
                         modifier = Modifier
@@ -87,43 +152,30 @@ fun CalendarGrid(
                             .aspectRatio(1f)
                             .padding(4.dp)
                             .clickable(enabled = hasEntry) {
-                                onDayClick(toDayKey(month.year, month.monthValue, day!!))
+                                if (day != null && dayKey != null) {
+                                    onDayClick(dayKey)
+                                }
                             },
                         colors = CardDefaults.cardColors(
-                            containerColor =
-                                if (isToday)
-                                    MaterialTheme.colorScheme.primaryContainer
-                                else
-                                    MaterialTheme.colorScheme.surface
+                            containerColor = heatColor
                         ),
                         border = if (isToday)
-                            BorderStroke(
-                                2.dp,
-                                MaterialTheme.colorScheme.primary
-                            )
+                            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
                         else null
                     ) {
-
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
                                     text = day?.toString() ?: "",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color =
-                                        if (isToday)
-                                            MaterialTheme.colorScheme.onPrimaryContainer
-                                        else
-                                            MaterialTheme.colorScheme.onSurface
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
-
                                 if (hasEntry) {
-                                    Spacer(Modifier.height(4.dp))
+                                    Spacer(Modifier.height(3.dp))
 
                                     Box(
                                         modifier = Modifier

@@ -2,6 +2,8 @@ package com.example.calendartracker.repository
 
 import com.example.calendartracker.data.*
 import com.example.calendartracker.util.dayKey
+import com.example.calendartracker.util.localDateToMillis
+import java.time.YearMonth
 
 
 class TrackerRepository(
@@ -20,7 +22,8 @@ class TrackerRepository(
         name: String,
         type: TrackerType,
         min: Int?,
-        max: Int?
+        max: Int?,
+        higherIsBetter: Boolean?
     ): Result<Unit> {
 
         if (name.isBlank()) {
@@ -37,7 +40,8 @@ class TrackerRepository(
                 name = name.trim(),
                 type = type,
                 minValue = min,
-                maxValue = max
+                maxValue = max,
+                higherIsBetter = higherIsBetter
             )
         )
 
@@ -84,5 +88,16 @@ class TrackerRepository(
 
     suspend fun getValuesForDay(time: Long): List<TrackerValue> {
         return dao.getValuesForDay(dayKey(time))
+    }
+
+    suspend fun getValuesForMonth(month: YearMonth): List<TrackerValue> {
+
+        val startMillis = localDateToMillis(month.atDay(1))
+        val endMillis = localDateToMillis(month.atEndOfMonth())
+
+        val startKey = dayKey(startMillis)
+        val endKey = dayKey(endMillis)
+
+        return dao.getValuesForMonth(startKey, endKey)
     }
 }

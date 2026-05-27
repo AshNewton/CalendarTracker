@@ -1,5 +1,6 @@
 package com.example.calendartracker.ui
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,16 +14,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.YearMonth
 
 class MainViewModel(private val trackerRepo: TrackerRepository, private val settingsRepo: SettingsRepository) : ViewModel() {
 
-    val trackers = trackerRepo.trackers.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    // =====================================================
+    // Trackers
+    // =====================================================
 
-    val entries = trackerRepo.entries.stateIn(
+    val trackers = trackerRepo.trackers.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
@@ -33,10 +33,11 @@ class MainViewModel(private val trackerRepo: TrackerRepository, private val sett
         type: TrackerType,
         min: Int?,
         max: Int?,
+        higherIsBetter: Boolean?,
         onResult: (Result<Unit>) -> Unit
     ) {
         viewModelScope.launch {
-            val result = trackerRepo.addTracker(name, type, min, max)
+            val result = trackerRepo.addTracker(name, type, min, max, higherIsBetter)
             onResult(result)
         }
     }
@@ -47,6 +48,16 @@ class MainViewModel(private val trackerRepo: TrackerRepository, private val sett
             trackerRepo.deleteTracker(tracker)
         }
     }
+
+    // =====================================================
+    // Entries
+    // =====================================================
+
+    val entries = trackerRepo.entries.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
     fun saveEntryForDate(
         time: Long,
@@ -59,6 +70,14 @@ class MainViewModel(private val trackerRepo: TrackerRepository, private val sett
             )
         }
     }
+
+    // =====================================================
+    // Values
+    // =====================================================
+
+    private val _monthValues =
+        MutableStateFlow<Map<YearMonth, List<TrackerValue>>>(emptyMap())
+    val monthValues = _monthValues.asStateFlow()
 
     fun getValuesForEntry(entryId: Int, onResult: (List<TrackerValue>) -> Unit) {
         viewModelScope.launch {
@@ -76,6 +95,17 @@ class MainViewModel(private val trackerRepo: TrackerRepository, private val sett
             onLoaded(values)
         }
     }
+
+    fun loadMonthValues(month: YearMonth) {
+        viewModelScope.launch {
+            val values = trackerRepo.getValuesForMonth(month)
+            _monthValues.value += (month to values)
+        }
+    }
+
+    // =====================================================
+    // Settings
+    // =====================================================
 
     val isCalendarView = settingsRepo.isCalendarView
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)

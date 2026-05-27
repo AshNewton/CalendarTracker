@@ -15,6 +15,13 @@ fun dayKey(timeMillis: Long): Long {
     return cal.timeInMillis
 }
 
+fun localDateToMillis(date: java.time.LocalDate): Long {
+    val cal = Calendar.getInstance()
+    cal.set(date.year, date.monthValue - 1, date.dayOfMonth, 0, 0, 0)
+    cal.set(Calendar.MILLISECOND, 0)
+    return cal.timeInMillis
+}
+
 fun buildMonthGrid(month: YearMonth): List<Int?> {
 
     val firstDay = month.atDay(1)

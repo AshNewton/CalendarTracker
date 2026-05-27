@@ -10,5 +10,7 @@ data class TrackerDefinition(
     val type: TrackerType,
 
     val minValue: Int? = null,
-    val maxValue: Int? = null
+    val maxValue: Int? = null,
+
+    val higherIsBetter: Boolean? = true
 )

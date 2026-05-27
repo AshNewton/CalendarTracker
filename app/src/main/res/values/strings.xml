@@ -12,6 +12,7 @@
     <string name="min_value">Min Value</string>
     <string name="na">N/A</string>
     <string name="no_data">No Data</string>
+    <string name="none">None</string>
     <string name="text">Text</string>
     <string name="type">Type</string>
     <string name="number">Number</string>
@@ -22,6 +23,7 @@
     <string name="add_tracker">Add Tracker</string>
     <string name="day_details">Day Details</string>
     <string name="edit_day">Edit Day</string>
+    <string name="higher_values_better">Higher values are better</string>
     <string name="manage_trackers">Manage Trackers</string>
     <string name="mark_as_filled">Mark as filled</string>
     <string name="mark_as_na">Mark as N/A</string>

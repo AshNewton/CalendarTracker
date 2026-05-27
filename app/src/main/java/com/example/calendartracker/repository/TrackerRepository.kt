@@ -44,6 +44,10 @@ class TrackerRepository(
         return Result.success(Unit)
     }
 
+    suspend fun deleteTracker(tracker: TrackerDefinition) {
+        dao.deleteTracker(tracker)
+    }
+
     // =====================================================
     // Entries
     // =====================================================

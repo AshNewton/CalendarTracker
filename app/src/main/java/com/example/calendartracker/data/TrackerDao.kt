@@ -19,6 +19,9 @@ interface TrackerDao {
     @Query("SELECT COUNT(*) FROM trackers WHERE LOWER(name) = LOWER(:name)")
     suspend fun countTrackersByName(name: String): Int
 
+    @Delete
+    suspend fun deleteTracker(tracker: TrackerDefinition)
+
 
     // =====================================================
     // Entries

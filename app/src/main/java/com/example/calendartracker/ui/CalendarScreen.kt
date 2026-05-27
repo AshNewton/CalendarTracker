@@ -18,6 +18,7 @@ fun CalendarScreen(
     entries: List<TrackerEntry>,
     trackers: List<TrackerDefinition>,
     onAddEdit: () -> Unit,
+    onManageTrackers: () -> Unit,
     onAddTracker: () -> Unit,
     onSelectEntry: (TrackerEntry) -> Unit
 ) {
@@ -45,6 +46,11 @@ fun CalendarScreen(
 
                     Spacer(Modifier.width(8.dp))
 
+                    Button(onClick = onManageTrackers) {
+                        Text(stringResource(R.string.manage_trackers))
+                    }
+                }
+                Row {
                     Button(onClick = onAddTracker) {
                         Text(stringResource(R.string.add_tracker))
                     }

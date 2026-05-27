@@ -4,5 +4,6 @@ enum class Screen {
     CALENDAR,
     DAY_DETAIL,
     EDIT_DAY,
-    ADD_TRACKER
+    ADD_TRACKER,
+    MANAGE_TRACKERS
 }

@@ -26,6 +26,7 @@ fun MainScreen(viewModel: MainViewModel) {
             trackers = trackers,
             onAddEdit = { screen = Screen.EDIT_DAY },
             onAddTracker = { screen = Screen.ADD_TRACKER },
+            onManageTrackers = { screen = Screen.MANAGE_TRACKERS },
             onSelectEntry = {
                 selectedEntry = it
                 screen = Screen.DAY_DETAIL
@@ -55,6 +56,16 @@ fun MainScreen(viewModel: MainViewModel) {
             onCancel = { screen = Screen.CALENDAR },
             onDone = { screen = Screen.CALENDAR }
         )
+
+        Screen.MANAGE_TRACKERS -> {
+            ManageTrackersScreen(
+                trackers = trackers,
+                viewModel = viewModel,
+                onBack = {
+                    screen = Screen.CALENDAR
+                }
+            )
+        }
     }}
 
 

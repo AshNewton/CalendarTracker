@@ -2,6 +2,7 @@ package com.example.calendartracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendartracker.data.TrackerDefinition
 import com.example.calendartracker.data.TrackerType
 import com.example.calendartracker.data.TrackerValue
 import com.example.calendartracker.repository.TrackerRepository
@@ -33,6 +34,13 @@ class MainViewModel(private val repo: TrackerRepository) : ViewModel() {
         viewModelScope.launch {
             val result = repo.addTracker(name, type, min, max)
             onResult(result)
+        }
+    }
+
+    fun deleteTracker(tracker: TrackerDefinition) {
+
+        viewModelScope.launch {
+            repo.deleteTracker(tracker)
         }
     }
 

@@ -21,7 +21,6 @@ fun CalendarScreen(
     onManageTrackers: () -> Unit,
     onSelectEntry: (TrackerEntry) -> Unit
 ) {
-
     Scaffold(
         topBar = {
             Column(
@@ -53,16 +52,13 @@ fun CalendarScreen(
             }
         }
     ) { padding ->
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
         ) {
-
             items(entries) { entry ->
-
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

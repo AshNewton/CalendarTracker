@@ -5,12 +5,19 @@ import com.example.calendartracker.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.example.calendartracker.data.*
+import com.example.calendartracker.ui.components.SwipeReveal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageTrackersScreen(
     trackers: List<TrackerDefinition>,
@@ -19,17 +26,28 @@ fun ManageTrackersScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .navigationBarsPadding()
-            ) {
-
-                Button(onClick = onBack) {
-                    Text(stringResource(R.string.back))
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.manage_trackers)) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
                 }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddTracker,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_tracker)
+                )
             }
         }
     ) { padding ->
@@ -39,55 +57,54 @@ fun ManageTrackersScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            Text(
-                stringResource(R.string.manage_trackers),
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(Modifier.height(16.dp))
-
-            Row {
-                Button(onClick = onAddTracker) {
-                    Text(stringResource(R.string.add_tracker))
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-
             LazyColumn {
-                items(trackers) { tracker ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(12.dp)
-                        ) {
-                            Text(
-                                tracker.name,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                items(
+                    items = trackers,
+                    key = {it.id}
+                ) { tracker ->
+                    SwipeReveal(
+                        actionsWidth = 160f,
+                        actions = { progress ->
+                            val scale = 0.8f + (0.2f * progress)
 
-                            Text(stringResource(R.string.format_type, tracker.type.displayName))
-
-                            if (tracker.type == TrackerType.NUMBER &&
-                                tracker.minValue != null && tracker.maxValue != null) {
-                                Text(
-                                    stringResource(R.string.format_range_int,
-                                        tracker.minValue, tracker.maxValue
-                                    )
-                                )
-                            }                            }
-
-                            Spacer(Modifier.height(12.dp))
-
-                            OutlinedButton(
-                                onClick = {
-                                    viewModel.deleteTracker(tracker)
+                            IconButton(
+                                onClick = { viewModel.deleteTracker(tracker) },
+                                modifier = Modifier.graphicsLayer {
+                                    this.alpha = progress
+                                    this.scaleX = scale
+                                    this.scaleY = scale
                                 }
                             ) {
-                                Text(stringResource(R.string.delete))
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(R.string.delete),
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Column(Modifier.padding(8.dp)) {
+                                Text(tracker.name, style = MaterialTheme.typography.titleMedium)
+
+                                Text(stringResource(R.string.format_type, tracker.type.displayName))
+
+                                if (tracker.type == TrackerType.NUMBER &&
+                                    tracker.minValue != null &&
+                                    tracker.maxValue != null
+                                ) {
+                                    Text(
+                                        stringResource(
+                                            R.string.format_range_int,
+                                            tracker.minValue,
+                                            tracker.maxValue
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
@@ -95,4 +112,5 @@ fun ManageTrackersScreen(
             }
         }
     }
+}
 

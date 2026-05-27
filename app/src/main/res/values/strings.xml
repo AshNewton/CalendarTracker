@@ -23,8 +23,11 @@
     <string name="day_details">Day Details</string>
     <string name="edit_day">Edit Day</string>
     <string name="manage_trackers">Manage Trackers</string>
+    <string name="mark_as_filled">Mark as filled</string>
+    <string name="mark_as_na">Mark as N/A</string>
     <string name="save_day">Save Day</string>
     <string name="toggle_view">Toggle View</string>
+    <string name="track_your_day">Track your day</string>
     <string name="tracker_name">Tracker Name</string>
 
 
@@ -32,6 +35,7 @@
 
 
     <string name="format_date">Date: %s</string>
+    <string name="format_placeholder">Enter %s</string>
     <string name="format_range_int">Range: %1$d - %2$d</string>
     <string name="format_type">Type: %s</string>
     <string name="format_value">Value: %s</string>

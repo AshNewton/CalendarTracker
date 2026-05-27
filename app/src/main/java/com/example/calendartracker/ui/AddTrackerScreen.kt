@@ -2,15 +2,20 @@ package com.example.calendartracker.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.calendartracker.data.*
 import com.example.calendartracker.R
+import com.example.calendartracker.data.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTrackerScreen(
     trackers: List<TrackerDefinition>,
@@ -32,17 +37,24 @@ fun AddTrackerScreen(
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.add_tracker)) },
+                navigationIcon = {
+                    IconButton(onClick = onCancel) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = {
+            BottomAppBar {
+                Spacer(Modifier.weight(1f))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .navigationBarsPadding(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                Button(onClick = onCancel) {
+                TextButton(onClick = onCancel) {
                     Text(stringResource(R.string.cancel))
                 }
 
@@ -54,12 +66,8 @@ fun AddTrackerScreen(
                             minValue.toInt(),
                             maxValue.toInt()
                         ) { result ->
-                            result.onSuccess {
-                                onDone()
-                            }
-                            result.onFailure {
-                                error = it.message
-                            }
+                            result.onSuccess { onDone() }
+                            result.onFailure { error = it.message }
                         }
                     },
                     enabled = name.isNotBlank() && !nameInUse
@@ -69,102 +77,97 @@ fun AddTrackerScreen(
             }
         }
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            Text(
-                stringResource(R.string.add_tracker),
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            TextField(
+            OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(stringResource(R.string.tracker_name)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
-            Spacer(Modifier.height(12.dp))
+            Text(
+                text = stringResource(R.string.type),
+                style = MaterialTheme.typography.titleMedium
+            )
 
-            Text(stringResource(R.string.type))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier.fillMaxWidth()
             ) {
-
-                if (type == TrackerType.TEXT) {
-                    Button(onClick = { type = TrackerType.TEXT }) {
-                        Text(stringResource(R.string.text))
-                    }
-                } else {
-                    OutlinedButton(onClick = { type = TrackerType.TEXT }) {
-                        Text(stringResource(R.string.text))
-                    }
+                SegmentedButton(
+                    selected = type == TrackerType.TEXT,
+                    onClick = { type = TrackerType.TEXT },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = 0,
+                        count = TrackerType.entries.size
+                    ),
+                ) {
+                    Text(stringResource(R.string.text))
                 }
 
-                if (type == TrackerType.NUMBER) {
-                    Button(onClick = { type = TrackerType.NUMBER }) {
-                        Text(stringResource(R.string.number))
-                    }
-                } else {
-                    OutlinedButton(onClick = { type = TrackerType.NUMBER }) {
-                        Text(stringResource(R.string.number))
-                    }
+                SegmentedButton(
+                    selected = type == TrackerType.NUMBER,
+                    onClick = { type = TrackerType.NUMBER },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = 1,
+                        count = TrackerType.entries.size
+                    ),
+                ) {
+                    Text(stringResource(R.string.number))
                 }
 
-                if (type == TrackerType.BOOL) {
-                    Button(onClick = { type = TrackerType.BOOL }) {
-                        Text(stringResource(R.string.yes_no))
-                    }
-                } else {
-                    OutlinedButton(onClick = { type = TrackerType.BOOL }) {
-                        Text(stringResource(R.string.yes_no))
-                    }
+                SegmentedButton(
+                    selected = type == TrackerType.BOOL,
+                    onClick = { type = TrackerType.BOOL },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = 2,
+                        count = TrackerType.entries.size
+                    ),
+                ) {
+                    Text(stringResource(R.string.yes_no))
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-
             if (type == TrackerType.NUMBER) {
+                Text(
+                    text = "Range",
+                    style = MaterialTheme.typography.titleMedium
+                )
 
-                TextField(
+                OutlinedTextField(
                     value = minValue,
                     onValueChange = { minValue = it },
                     label = { Text(stringResource(R.string.min_value)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
 
-                Spacer(Modifier.height(8.dp))
-
-                TextField(
+                OutlinedTextField(
                     value = maxValue,
                     onValueChange = { maxValue = it },
                     label = { Text(stringResource(R.string.max_value)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
-
-            error?.let {
+            if (error != null) {
                 Text(
-                    text = it,
+                    text = error ?: "",
                     color = MaterialTheme.colorScheme.error
                 )
-                Spacer(Modifier.height(8.dp))
             }
 
             if (nameInUse) {

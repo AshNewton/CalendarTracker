@@ -2,7 +2,6 @@ package com.example.calendartracker.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,15 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -46,9 +42,9 @@ import com.example.calendartracker.R
 import com.example.calendartracker.data.TrackerDefinition
 import com.example.calendartracker.data.TrackerEntry
 import com.example.calendartracker.ui.components.CalendarGrid
+import com.example.calendartracker.ui.components.CalendarList
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,27 +140,12 @@ fun CalendarScreen(
                     .fillMaxSize()
                     .padding(padding),
             ) {
-                if (!isCalendarView) { // list view
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(entries) { entry ->
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 6.dp)
-                                    .clickable { onSelectEntry(entry) }
-                            ) {
-                                Column(Modifier.padding(12.dp)) {
-                                    Text(Date(entry.date).toString())
-                                    Text(stringResource(R.string.view_details))
-                                }
-                            }
-                        }
-                    }
-                } else { // calendar view
+                if (!isCalendarView) {
+                    CalendarList(
+                        entries = entries,
+                        onSelectEntry = onSelectEntry
+                    )
+                } else {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         ExposedDropdownMenuBox(
                             expanded = dropdownExpanded,

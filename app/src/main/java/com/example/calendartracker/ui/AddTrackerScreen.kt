@@ -1,5 +1,6 @@
 package com.example.calendartracker.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -40,6 +41,8 @@ fun AddTrackerScreen(
     val nameInUse = trackers.any {
         it.name.equals(name, ignoreCase = true)
     }
+
+    BackHandler(onBack = onCancel)
 
     Scaffold(
         topBar = {

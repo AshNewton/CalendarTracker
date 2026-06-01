@@ -1,5 +1,6 @@
 package com.example.calendartracker.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,8 @@ fun DayDetailScreen(
             }
         }
     }
+
+    BackHandler(onBack = onBack)
 
     Scaffold(
         topBar = {

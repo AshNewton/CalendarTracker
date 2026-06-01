@@ -1,5 +1,6 @@
 package com.example.calendartracker.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.res.stringResource
 import com.example.calendartracker.R
 import androidx.compose.foundation.layout.*
@@ -25,6 +26,8 @@ fun ManageTrackersScreen(
     onAddTracker: () -> Unit,
     onBack: () -> Unit
 ) {
+    BackHandler(onBack = onBack)
+
     Scaffold(
         topBar = {
             TopAppBar(

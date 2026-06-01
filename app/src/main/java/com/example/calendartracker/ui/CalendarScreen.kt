@@ -1,5 +1,7 @@
 package com.example.calendartracker.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -76,6 +78,8 @@ fun CalendarScreen(
         pageCount = { 2400 }
     )
 
+    val activity = LocalActivity.current
+
     fun pageToMonth(page: Int): YearMonth {
         return startMonth.plusMonths(page.toLong())
     }
@@ -83,6 +87,10 @@ fun CalendarScreen(
     LaunchedEffect(pagerState.currentPage, entries.size) {
         val visibleMonth = pageToMonth(pagerState.currentPage)
         viewModel.loadMonthValues(visibleMonth)
+    }
+
+    BackHandler {
+        activity?.moveTaskToBack(true)
     }
 
     Scaffold(

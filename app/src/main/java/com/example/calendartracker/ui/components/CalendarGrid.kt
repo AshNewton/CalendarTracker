@@ -83,7 +83,19 @@ fun CalendarGrid(
         return when (tracker.type) {
             TrackerType.BOOL -> {
                 val bool = value.value.toBoolean()
-                if (bool) Color.Green else Color.Red
+                if (bool) {
+                    Color.hsv(
+                        hue = 120f,
+                        saturation = 0.7f,
+                        value = 0.85f
+                    )
+                } else {
+                    Color.hsv(
+                        hue = 0f,
+                        saturation = 0.7f,
+                        value = 0.85f
+                    )
+                }
             }
 
             TrackerType.NUMBER -> {
@@ -94,12 +106,19 @@ fun CalendarGrid(
                 val max = tracker.maxValue?.toFloat() ?: 1f
 
                 val normalized = normalize(num, min, max)
-                val t = if (tracker.higherIsBetter == false) 1f - normalized else normalized
 
-                Color(
-                    red = 1f - t,
-                    green = t,
-                    blue = 0f
+                val t =
+                    if (tracker.higherIsBetter == false)
+                        1f - normalized
+                    else
+                        normalized
+
+                val hue = 120f * t
+
+                Color.hsv(
+                    hue = hue,
+                    saturation = 0.7f,
+                    value = 0.85f
                 )
             }
 

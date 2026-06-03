@@ -15,6 +15,18 @@ fun dayKey(timeMillis: Long): Long {
     return cal.timeInMillis
 }
 
+fun dayKey(year: Int, month: Int, day: Int): Long {
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.YEAR, year)
+    cal.set(Calendar.MONTH, month - 1) // Calendar is 0-based
+    cal.set(Calendar.DAY_OF_MONTH, day)
+    cal.set(Calendar.HOUR_OF_DAY, 0)
+    cal.set(Calendar.MINUTE, 0)
+    cal.set(Calendar.SECOND, 0)
+    cal.set(Calendar.MILLISECOND, 0)
+    return cal.timeInMillis
+}
+
 fun localDateToMillis(date: java.time.LocalDate): Long {
     val cal = Calendar.getInstance()
     cal.set(date.year, date.monthValue - 1, date.dayOfMonth, 0, 0, 0)
@@ -46,4 +58,16 @@ fun buildMonthGrid(month: YearMonth): List<Int?> {
     }
 
     return result
+}
+
+fun isToday(dayKey: Long?): Boolean {
+    if (dayKey == null) return false
+
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.HOUR_OF_DAY, 0)
+    cal.set(Calendar.MINUTE, 0)
+    cal.set(Calendar.SECOND, 0)
+    cal.set(Calendar.MILLISECOND, 0)
+
+    return cal.timeInMillis == dayKey
 }

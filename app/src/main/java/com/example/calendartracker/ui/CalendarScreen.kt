@@ -140,84 +140,94 @@ fun CalendarScreen(
                     .fillMaxSize()
                     .padding(padding),
             ) {
-                if (!isCalendarView) {
-                    CalendarList(
-                        entries = entries,
-                        onSelectEntry = onSelectEntry
-                    )
-                } else {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        ExposedDropdownMenuBox(
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    ExposedDropdownMenuBox(
+                        expanded = dropdownExpanded,
+                        onExpandedChange = { dropdownExpanded = !dropdownExpanded },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = trackers.firstOrNull { it.id == selectedTrackerId }?.name
+                                ?: "Select tracker",
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(dropdownExpanded)
+                            }
+                        )
+
+                        ExposedDropdownMenu(
                             expanded = dropdownExpanded,
-                            onExpandedChange = { dropdownExpanded = !dropdownExpanded },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+                            onDismissRequest = { dropdownExpanded = false }
                         ) {
-                            OutlinedTextField(
-                                value = trackers.firstOrNull { it.id == selectedTrackerId }?.name
-                                    ?: "Select tracker",
-                                onValueChange = {},
-                                readOnly = true,
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(dropdownExpanded)
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.none)) },
+                                onClick = {
+                                    selectedTrackerId = null
+                                    dropdownExpanded = false
                                 }
                             )
-
-                            ExposedDropdownMenu(
-                                expanded = dropdownExpanded,
-                                onDismissRequest = { dropdownExpanded = false }
-                            ) {
+                            trackers.forEach { tracker ->
                                 DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.none)) },
+                                    text = { Text(tracker.name) },
                                     onClick = {
-                                        selectedTrackerId = null
+                                        selectedTrackerId = tracker.id
                                         dropdownExpanded = false
                                     }
                                 )
-                                trackers.forEach { tracker ->
-                                    DropdownMenuItem(
-                                        text = { Text(tracker.name) },
-                                        onClick = {
-                                            selectedTrackerId = tracker.id
-                                            dropdownExpanded = false
-                                        }
-                                    )
-                                }
                             }
                         }
+                    }
 
-                        Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
 
 
-                        HorizontalPager(
-                            state = pagerState,
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        pageSpacing = 8.dp,
+                        beyondViewportPageCount = 1
+                    ) { page ->
+                        val month = pageToMonth(page)
+
+                        val valuesForMonth = monthValues[month] ?: emptyList()
+
+                        val monthName = remember(month) {
+                            month.month.name.lowercase().replaceFirstChar { it.uppercase() }
+                        }
+
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            pageSpacing = 8.dp,
-                            beyondViewportPageCount = 1
-                        ) { page ->
-                            val month = pageToMonth(page)
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Text(
+                                text = "$monthName ${month.year}",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(12.dp)
+                            )
 
-                            val valuesForMonth = monthValues[month] ?: emptyList()
+                            if (!isCalendarView) {
+                                CalendarList(
+                                    month = month,
+                                    entries = entries,
+                                    onDayClick = { daykey ->
+                                        val entry = entries.firstOrNull {
+                                            it.dayKey == daykey
+                                        }
 
-                            val monthName = remember(month) {
-                                month.month.name.lowercase().replaceFirstChar { it.uppercase() }
-                            }
-
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                verticalArrangement = Arrangement.Top
-                            ) {
-                                Text(
-                                    text = "$monthName ${month.year}",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    modifier = Modifier.padding(12.dp)
+                                        onSelectEntry(entry)
+                                    },
+                                    selectedTrackerId = selectedTrackerId,
+                                    trackers = trackers,
+                                    values = valuesForMonth
                                 )
-
+                            } else {
                                 CalendarGrid(
                                     month = month,
                                     entries = entries,

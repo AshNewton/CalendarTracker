@@ -42,6 +42,7 @@ fun MainScreen(viewModel: MainViewModel) {
         )
 
         Screen.EDIT_DAY -> EditDayScreen(
+            entry = selectedEntry,
             trackers = trackers,
             viewModel = viewModel,
             onCancel = { screen = Screen.CALENDAR },

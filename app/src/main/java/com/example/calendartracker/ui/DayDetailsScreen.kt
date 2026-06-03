@@ -123,37 +123,39 @@ fun DayDetailScreen(
             items(visibleTrackers) { tracker ->
                 val value = valuesState[tracker.id]
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    )
-                ) {
-                    ListItem(
-                        headlineContent = {
-                            Text(tracker.name)
-                        },
-                        supportingContent = {
-                            if (tracker.type != TrackerType.BOOL) {
-                                Text(value?.value ?: stringResource(R.string.no_data))
+                if (value?.state == ValueState.ENTERED) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
+                    ) {
+                        ListItem(
+                            headlineContent = {
+                                Text(tracker.name)
+                            },
+                            supportingContent = {
+                                if (tracker.type != TrackerType.BOOL) {
+                                    Text(value?.value ?: stringResource(R.string.no_data))
+                                }
+                            },
+                            leadingContent = {
+                                if (tracker.type == TrackerType.BOOL && value!= null) {
+                                    Icon(
+                                        imageVector = if (value.value.toBoolean())
+                                            Icons.Default.Check
+                                        else
+                                            Icons.Default.Close,
+                                        contentDescription = null,
+                                        tint = if (value.value.toBoolean())
+                                            MaterialTheme.colorScheme.primary
+                                        else
+                                            MaterialTheme.colorScheme.error
+                                    )
+                                }
                             }
-                        },
-                        leadingContent = {
-                            if (tracker.type == TrackerType.BOOL && value!= null) {
-                                Icon(
-                                    imageVector = if (value.value.toBoolean())
-                                        Icons.Default.Check
-                                    else
-                                        Icons.Default.Close,
-                                    contentDescription = null,
-                                    tint = if (value.value.toBoolean())
-                                        MaterialTheme.colorScheme.primary
-                                    else
-                                        MaterialTheme.colorScheme.error
-                                )
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
